@@ -2,7 +2,6 @@
 
 import os
 import sys
-import subprocess
 import argparse
 import pyperclip
 import fnmatch
@@ -15,10 +14,10 @@ DEFAULT_IGNORE_CONTENT = """# Version control
 .pconcatignore
 
 # Node.js
-node_modules/
+node_modules/**
 
 # Python
-__pycache__/
+__pycache__/**
 *.py[cod]
 *.so
 
@@ -35,21 +34,21 @@ ehthumbs.db
 Thumbs.db
 
 # IDE specific files
-.vscode/
-.idea/
+.vscode/**
+.idea/**
 *.swp
 *.swo
 
 # Build directories
-build/
-dist/
+build/**
 
 # Environment files
 .env
 .venv
-env/
-venv/
+env/**
+venv/**
 """
+
 
 def create_ignore_file(root_dir):
     ignore_file_path = os.path.join(root_dir, '.pconcatignore')
@@ -63,6 +62,7 @@ def create_ignore_file(root_dir):
         f.write(DEFAULT_IGNORE_CONTENT)
     print(f".pconcatignore file created at {ignore_file_path}")
 
+
 def parse_ignore_file(root_dir):
     ignore_patterns = []
     ignore_file = os.path.join(root_dir, '.pconcatignore')
@@ -71,21 +71,48 @@ def parse_ignore_file(root_dir):
             ignore_patterns = [line.strip() for line in f if line.strip() and not line.startswith('#')]
     return ignore_patterns
 
+
 def should_ignore(path, root_dir, ignore_patterns):
     relative_path = os.path.relpath(path, root_dir)
     path_parts = relative_path.split(os.sep)
-    
+
     for pattern in ignore_patterns:
-        if any(fnmatch.fnmatch(part, pattern) for part in path_parts):
+        if pattern.endswith('/**'):
+            dir_pattern = pattern[:-3]
+            if any(part == dir_pattern for part in path_parts):
+                return True
+        elif fnmatch.fnmatch(relative_path, pattern):
             return True
-        if fnmatch.fnmatch(relative_path, pattern):
+        elif any(fnmatch.fnmatch(part, pattern) for part in path_parts):
             return True
     return False
 
+
+def generate_tree(root_dir, ignore_patterns, prefix="", is_last=True, max_depth=None):
+    if max_depth is not None and max_depth < 0:
+        return ""
+
+    base_name = os.path.basename(root_dir)
+    tree = prefix + ("└── " if is_last else "├── ") + base_name + "\n"
+
+    entries = [e for e in os.scandir(root_dir) if not should_ignore(e.path, root_dir, ignore_patterns)]
+    entries.sort(key=lambda e: e.name.lower())
+
+    for i, entry in enumerate(entries):
+        is_last_entry = i == len(entries) - 1
+        new_prefix = prefix + ("    " if is_last else "│   ")
+
+        if entry.is_dir():
+            tree += generate_tree(entry.path, ignore_patterns, new_prefix, is_last_entry, max_depth - 1 if max_depth is not None else None)
+        else:
+            tree += new_prefix + ("└── " if is_last_entry else "├── ") + entry.name + "\n"
+
+    return tree
+
+
 def get_tree_structure(root_dir, ignore_patterns):
-    ignore_arg = "|".join(ignore_patterns).replace("*", "")  # Remove asterisks for tree command
-    tree = subprocess.check_output(["tree", "-L", "2", "-I", ignore_arg, root_dir]).decode("utf-8")
-    return tree.strip()
+    return generate_tree(root_dir, ignore_patterns, max_depth=None)
+
 
 def is_text_file(file_path):
     try:
@@ -94,6 +121,7 @@ def is_text_file(file_path):
         return True
     except UnicodeDecodeError:
         return False
+
 
 def get_file_contents(root_dir, ignore_patterns):
     contents = []
@@ -107,6 +135,7 @@ def get_file_contents(root_dir, ignore_patterns):
                 relative_path = os.path.relpath(file_path, root_dir)
                 contents.append(f"\nContents of {relative_path}:\n{content}")
     return "\n".join(contents)
+
 
 def pconcat(root_dir, output_file=None, print_to_shell=False):
     try:
@@ -127,6 +156,7 @@ def pconcat(root_dir, output_file=None, print_to_shell=False):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
 
+
 def main():
     parser = argparse.ArgumentParser(description="Project Concatenator")
     parser.add_argument("-f", "--file", help="Output to a file instead of clipboard")
@@ -140,6 +170,7 @@ def main():
         create_ignore_file(root_dir)
     else:
         pconcat(root_dir, args.file, args.shell)
+
 
 if __name__ == "__main__":
     main()
