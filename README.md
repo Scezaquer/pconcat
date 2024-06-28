@@ -1,6 +1,6 @@
 # pconcat (Project Concatenator)
 
-pconcat is a command-line tool designed to concatenate the contents of an entire project into a single output. Its primary purpose is to provide a comprehensive project overview to AI assistants, giving them all the context they need to help you with development tasks.
+pconcat is a command-line tool designed to concatenate the contents of an entire project into a single output. Its primary purpose is to provide a comprehensive project overview to AI assistants, giving them all the context they need to help you with development tasks. Note that this project was mostly made using Claude 3.5 Sonnet.
 
 ## Main Features
 
