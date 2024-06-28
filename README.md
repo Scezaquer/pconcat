@@ -1,14 +1,19 @@
 # pconcat (Project Concatenator)
 
-pconcat is a command-line tool that recursively concatenates the contents of text files in a directory, prefixed with a tree structure of the project. It's designed to give you a quick overview of your project's structure and contents.
+pconcat is a command-line tool designed to concatenate the contents of an entire project into a single output. Its primary purpose is to provide a comprehensive project overview to AI assistants, giving them all the context they need to help you with development tasks.
 
-## Features
+## Main Features
 
 - Generates a tree structure of your project directory
 - Concatenates the contents of text files
+- Outputs the entire project structure and contents in a format suitable for AI assistants
 - Supports ignoring files and directories using .pconcatignore
 - Flexible output options: clipboard, file, or shell
 - Can generate a standard .pconcatignore file
+
+## Why pconcat?
+
+When working with AI assistants on development tasks, providing context is crucial. pconcat allows you to easily share your entire project structure and contents in a single, organized format. This gives AI assistants a comprehensive view of your project, enabling them to provide more accurate and context-aware assistance.
 
 ## Installation
 
@@ -50,7 +55,7 @@ pconcat [options]
 
 2. Output to a file:
    ```
-   pconcat -f output.txt
+   pconcat -f project_overview.txt
    ```
 
 3. Print to shell:
@@ -88,10 +93,10 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/yourusername/pconcat/issues) if you want to contribute.
+Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/Scezaquer/pconcat/issues) if you want to contribute.
 
 ## Author
 
-Your Name - [@yourusername](https://github.com/yourusername)
+Scezaquer - [@Scezaquer](https://github.com/Scezaquer)
 
-Project Link: [https://github.com/yourusername/pconcat](https://github.com/yourusername/pconcat)
+Project Link: [https://github.com/Scezaquer/pconcat](https://github.com/Scezaquer/pconcat)
