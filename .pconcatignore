@@ -1,0 +1,42 @@
+# Version control
+.git/**
+.gitignore
+
+# Project concatenator
+.pconcatignore
+
+# Node.js
+node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build directories
+build/
+dist/
+
+# Environment files
+.env
+.venv
+env/
+venv/
