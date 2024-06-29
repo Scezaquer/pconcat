@@ -6,10 +6,10 @@
 .pconcatignore
 
 # Node.js
-node_modules/
+node_modules/**
 
 # Python
-__pycache__/
+__pycache__/**
 *.py[cod]
 *.so
 
@@ -26,17 +26,16 @@ ehthumbs.db
 Thumbs.db
 
 # IDE specific files
-.vscode/
-.idea/
+.vscode/**
+.idea/**
 *.swp
 *.swo
 
 # Build directories
-build/
-dist/
+build/**
 
 # Environment files
 .env
 .venv
-env/
-venv/
+env/**
+venv/**
