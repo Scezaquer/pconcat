@@ -85,7 +85,6 @@ build/
 
 - Python 3.6+
 - pyperclip
-- tree (command-line utility)
 
 ## License
 
