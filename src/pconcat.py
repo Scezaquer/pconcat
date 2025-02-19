@@ -123,7 +123,7 @@ def is_text_file(file_path):
         return False
 
 
-def get_file_contents(root_dir, ignore_patterns):
+def get_file_contents(root_dir, ignore_patterns, ignore_filename=False):
     contents = []
     for root, dirs, files in os.walk(root_dir):
         dirs[:] = [d for d in dirs if not should_ignore(os.path.join(root, d), root_dir, ignore_patterns)]
@@ -133,43 +133,72 @@ def get_file_contents(root_dir, ignore_patterns):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
                 relative_path = os.path.relpath(file_path, root_dir)
-                contents.append(f"\nContents of {relative_path}:\n{content}")
+                contents.append(f"\nContents of {relative_path}:\n{content}" if not ignore_filename else content)
     return "\n".join(contents)
 
 
-def pconcat(root_dir, output_file=None, print_to_shell=False):
-    try:
-        ignore_patterns = parse_ignore_file(root_dir)
-        tree = get_tree_structure(root_dir, ignore_patterns)
-        contents = get_file_contents(root_dir, ignore_patterns)
-        result = f"{tree}\n{contents}"
+def pconcat(root_dir, output_file=None, print_to_shell=False, ignore_filename=False, ignore_tree=False, ignore_contents=False, is_dir=True):
+    if is_dir:
+        try:
+            ignore_patterns = parse_ignore_file(root_dir)
+            tree = get_tree_structure(root_dir, ignore_patterns) if not ignore_tree else ""
+            contents = get_file_contents(root_dir, ignore_patterns, ignore_filename) if not ignore_contents else ""
+            result = f"{tree}\n{contents}" if tree and contents else tree or contents
 
-        if print_to_shell:
-            print(result)
-        elif output_file:
-            with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(result)
-            print(f"Project content has been written to {output_file}")
-        else:
-            pyperclip.copy(result)
-            print("Project content has been copied to clipboard")
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
+            if print_to_shell:
+                print(result)
+            elif output_file:
+                with open(output_file, 'w', encoding='utf-8') as f:
+                    f.write(result)
+                print(f"Project content has been written to {output_file}")
+            else:
+                pyperclip.copy(result)
+                print("Project content has been copied to clipboard")
+        except Exception as e:
+            print(f"An error occurred: {str(e)}")
+    else:
+        try:
+            with open(root_dir, 'r', encoding='utf-8') as f:
+                content = f.read()
+            if print_to_shell:
+                print(content)
+            elif output_file:
+                with open(output_file, 'w', encoding='utf-8') as out:
+                    out.write(content)
+                print(f"File content has been written to {output_file}")
+            else:
+                pyperclip.copy(content)
+                print("File content has been copied to clipboard")
+            sys.exit(0)
+        except Exception as e:
+            print(f"Error reading file: {str(e)}")
+            sys.exit(1)
 
 
 def main():
     parser = argparse.ArgumentParser(description="Project Concatenator")
+    parser.add_argument("-t", "--target", help="Target directory to concatenate", default=os.getcwd())
     parser.add_argument("-f", "--file", help="Output to a file instead of clipboard")
     parser.add_argument("-s", "--shell", action="store_true", help="Print output to shell")
     parser.add_argument("-i", "--init", action="store_true", help="Create a standard .pconcatignore file")
+    parser.add_argument("--no_filename", action="store_true", help="Do not include filename in output")
+    parser.add_argument("--no_tree", action="store_true", help="Do not include directory tree in output")
+    parser.add_argument("--no_contents", action="store_true", help="Do not include file contents in output")
     args = parser.parse_args()
 
-    root_dir = os.getcwd()
+    root_dir = os.path.abspath(args.target)
+    if os.path.isfile(root_dir):
+        is_dir = False
+    elif os.path.isdir(root_dir):
+        is_dir = True
+    else:
+        print(f"Error: {root_dir} is not a valid file or directory")
+        sys.exit(1)
 
     if args.init:
         create_ignore_file(root_dir)
     else:
-        pconcat(root_dir, args.file, args.shell)
+        pconcat(root_dir, args.file, args.shell, args.no_filename, args.no_tree, args.no_contents, is_dir)
 
 
 if __name__ == "__main__":

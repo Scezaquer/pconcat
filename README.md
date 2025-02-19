@@ -1,84 +1,63 @@
 # pconcat (Project Concatenator)
 
-pconcat is a command-line tool designed to concatenate the contents of an entire project into a single output. Its primary purpose is to provide a comprehensive project overview to AI assistants, giving them all the context they need to help you with development tasks. Note that this project was mostly made using Claude 3.5 Sonnet.
+A command-line tool to concatenate project contents into a single output, made for sharing context with AI assistants.
 
-## Main Features
+## Features
 
-- Generates a tree structure of your project directory
-- Concatenates the contents of text files
-- Outputs the entire project structure and contents in a format suitable for AI assistants
-- Supports ignoring files and directories using .pconcatignore
-- Flexible output options: clipboard, file, or shell
-- Can generate a standard .pconcatignore file
-
-## Why pconcat?
-
-When working with AI assistants on development tasks, providing context is crucial. pconcat allows you to easily share your entire project structure and contents in a single, organized format. This gives AI assistants a comprehensive view of your project, enabling them to provide more accurate and context-aware assistance.
+- Directory tree structure generation
+- Text file content concatenation
+- Flexible output: clipboard, file, or shell
+- `.pconcatignore` file support
+- Command to generate standard `.pconcatignore`
+- Single file reading support
 
 ## Installation
 
-1. Ensure you have Python 3.6 or later installed.
-2. Clone this repository or download the `pconcat` script.
-3. Make the script executable:
-   ```
+1. Install Python 3.6+
+2. Clone repository
+3. Make executable:
+   ```bash
    chmod +x /path/to/pconcat
    ```
-4. Move the script to a directory in your PATH, e.g.:
-   ```
+4. Add to PATH:
+   ```bash
    sudo mv /path/to/pconcat /usr/local/bin/
    ```
-5. Install the required Python libraries:
-   ```
+5. Install dependencies:
+   ```bash
    pip install pyperclip
    ```
 
 ## Usage
 
-Run `pconcat` in your project directory:
-
-```
-pconcat [options]
+```bash
+pconcat [options] [-t TARGET]
 ```
 
 ### Options
 
-- `-f FILE`, `--file FILE`: Output to a file instead of clipboard
-- `-s`, `--shell`: Print output to shell
-- `-i`, `--init`: Create a standard .pconcatignore file
+- `-t`, `--target`: Target directory/file (default: current directory)
+- `-f`, `--file`: Output to file
+- `-s`, `--shell`: Print to shell
+- `-i`, `--init`: Create `.pconcatignore`
+- `--no_filename`: Exclude filenames
+- `--no_tree`: Exclude directory tree
+- `--no_contents`: Exclude file contents
 
 ### Examples
 
-1. Copy project contents to clipboard (default behavior):
-   ```
-   pconcat
-   ```
+```bash
+# Copy to clipboard
+pconcat
 
-2. Output to a file:
-   ```
-   pconcat -f project_overview.txt
-   ```
+# Output to file
+pconcat -f output.txt
 
-3. Print to shell:
-   ```
-   pconcat -s
-   ```
+# Print to shell
+pconcat -s
 
-4. Create a standard .pconcatignore file:
-   ```
-   pconcat -i
-   ```
-
-## .pconcatignore
-
-pconcat supports ignoring files and directories using a `.pconcatignore` file. This file works similarly to `.gitignore`. You can create a standard .pconcatignore file using the `-i` option.
-
-Example .pconcatignore contents:
-
-```
-.git/**
-node_modules/
-*.log
-build/
+# Create .pconcatignore
+pconcat -i
 ```
 
 ## Dependencies
@@ -88,14 +67,13 @@ build/
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+MIT License
 
-## Contributing
+## Links
 
-Contributions, issues, and feature requests are welcome! Feel free to check [issues page](https://github.com/Scezaquer/pconcat/issues) if you want to contribute.
+- [GitHub Repository](https://github.com/Scezaquer/pconcat)
+- [Issues](https://github.com/Scezaquer/pconcat/issues)
 
 ## Author
 
 Scezaquer - [@Scezaquer](https://github.com/Scezaquer)
-
-Project Link: [https://github.com/Scezaquer/pconcat](https://github.com/Scezaquer/pconcat)
