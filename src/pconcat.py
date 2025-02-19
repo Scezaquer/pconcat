@@ -196,6 +196,9 @@ def main():
         sys.exit(1)
 
     if args.init:
+        if not is_dir:
+            print("Error: Cannot create .pconcatignore file for a file. Target must be a directory.")
+            sys.exit(1)
         create_ignore_file(root_dir)
     else:
         pconcat(root_dir, args.file, args.shell, args.no_filename, args.no_tree, args.no_contents, is_dir)
